@@ -57,6 +57,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
     annotationProcessor(libs.androidx.room.compiler)
     ksp (libs.androidx.room.compiler)
     implementation(libs.kotlinx.coroutines.android)
