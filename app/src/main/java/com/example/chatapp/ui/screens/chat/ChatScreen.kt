@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,7 +40,9 @@ import java.time.Instant
 fun ChatScreen(user: String, viewModel: ChatViewModel, navController: NavController) {
     val messageList by viewModel.allMessages.observeAsState(initial = emptyList())
     var messageText by remember { mutableStateOf("") }
-    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+    Scaffold(modifier = Modifier
+        .fillMaxSize()
+        .navigationBarsPadding(), topBar = {
         TopAppBar(navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
@@ -65,7 +69,9 @@ fun ChatScreen(user: String, viewModel: ChatViewModel, navController: NavControl
                 TextField(
                     value = messageText,
                     onValueChange = { messageText = it },
-                    modifier = Modifier.fillMaxWidth(fraction = 0.8f)
+                    modifier = Modifier
+                        .fillMaxWidth(fraction = 0.8f)
+                        .imePadding()
                 )
                 Button(onClick = {
                     if (messageText.isNotEmpty()) {
@@ -77,6 +83,7 @@ fun ChatScreen(user: String, viewModel: ChatViewModel, navController: NavControl
                             )
                         )
                         messageText = ""
+                        viewModel.simulateOtherUserMessage(if (user == "Sarah") "Alice" else "Sarah")
                     }
                 }) {
                     Text("Send")

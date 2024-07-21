@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatapp.data.local.database.MessageDatabase
 import com.example.chatapp.data.models.Message
 import com.example.chatapp.data.repositories.MessageRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.Instant
 
 class ChatViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: MessageRepository
@@ -21,6 +23,16 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun insert(message: Message) = viewModelScope.launch {
+        repository.insert(message)
+    }
+
+    fun simulateOtherUserMessage(user: String) = viewModelScope.launch {
+        delay(1000)
+        val message = Message(
+            content = "Reply from $user",
+            timestamp = Instant.now().toEpochMilli(),
+            user = user,
+        )
         repository.insert(message)
     }
 }
