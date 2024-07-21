@@ -7,12 +7,13 @@ import androidx.room.RoomDatabase
 import com.example.chatapp.data.local.MessageDao
 import com.example.chatapp.data.models.Message
 
-@Database(entities = [Message::class], version = 1)
+@Database(entities = [Message::class], version = 2)
 abstract class MessageDatabase : RoomDatabase() {
     abstract fun messageDao(): MessageDao
 
     companion object {
-        @Volatile private var INSTANCE: MessageDatabase? = null
+        @Volatile
+        private var INSTANCE: MessageDatabase? = null
 
         fun getDatabase(context: Context): MessageDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -20,7 +21,7 @@ abstract class MessageDatabase : RoomDatabase() {
                     context.applicationContext,
                     MessageDatabase::class.java,
                     "message_database"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 instance
             }

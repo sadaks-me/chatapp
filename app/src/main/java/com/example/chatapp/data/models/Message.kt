@@ -1,10 +1,11 @@
 package com.example.chatapp.data.models
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Entity(tableName = "message", primaryKeys = ["id"])
+@Entity(tableName = "message")
 data class Message(
-    val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val content: String,
     val timestamp: Long,
     val isSent: Boolean
