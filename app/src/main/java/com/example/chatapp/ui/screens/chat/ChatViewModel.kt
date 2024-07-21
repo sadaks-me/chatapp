@@ -3,6 +3,7 @@ package com.example.chatapp.ui.screens.chat
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.chatapp.data.local.database.MessageDatabase
@@ -16,6 +17,8 @@ import java.time.Instant
 class ChatViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: MessageRepository
     val allMessages: LiveData<List<Message>>
+    var sender = MutableLiveData("Alice")
+    var receiver = MutableLiveData("Sarah")
 
     init {
         val messageDao = MessageDatabase.getDatabase(application).messageDao()
@@ -35,5 +38,10 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
             user = user,
         )
         repository.insert(message)
+    }
+
+    fun switchUser() {
+        sender.postValue(if(sender.value == "Alice") "Sarah" else "Alice")
+        receiver.postValue(if(receiver.value == "Sarah") "Alice" else "Sarah")
     }
 }

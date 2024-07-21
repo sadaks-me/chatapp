@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ChatAppTheme {
                 val viewModel: ChatViewModel = viewModel()
-                ChatScreen("Alice", "Sarah", viewModel)
+                ChatScreen(viewModel)
             }
         }
     }

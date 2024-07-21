@@ -23,11 +23,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults.itemColors
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -53,6 +59,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import com.example.chatapp.R
 import com.example.chatapp.data.models.Message
 import com.example.chatapp.ui.themes.activeColor
@@ -64,9 +72,12 @@ import java.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(sender: String, receiver: String, viewModel: ChatViewModel) {
+fun ChatScreen(viewModel: ChatViewModel) {
     val messageList by viewModel.allMessages.observeAsState(initial = emptyList())
+    val sender by viewModel.sender.observeAsState()
+    val receiver by viewModel.receiver.observeAsState()
     var messageText by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .navigationBarsPadding(), containerColor = Color.White, topBar = {
@@ -110,7 +121,7 @@ fun ChatScreen(sender: String, receiver: String, viewModel: ChatViewModel) {
                 }
             }, title = {
                 Text(
-                    receiver,
+                    receiver!!,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 6.dp),
@@ -120,6 +131,30 @@ fun ChatScreen(sender: String, receiver: String, viewModel: ChatViewModel) {
                     ),
                     color = Color.Black
                 )
+            }, actions = {
+                IconButton(modifier = Modifier.size(48.dp), onClick = { expanded = true }) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_more_horiz_24),
+                        contentDescription = "More",
+                        tint = inactiveTextColor.copy(0.4f),
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    DropdownMenuItem(
+                        text = { Text("Switch User") },
+                        onClick = {
+                            viewModel.switchUser()
+                            expanded = false
+                        },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Outlined.Person,
+                                contentDescription = null
+                            )
+                        },
+                    )
+                }
             })
     }, bottomBar = {
         Box(
@@ -172,11 +207,11 @@ fun ChatScreen(sender: String, receiver: String, viewModel: ChatViewModel) {
                             Message(
                                 content = messageText.trim(),
                                 timestamp = Instant.now().toEpochMilli(),
-                                user = sender
+                                user = sender!!
                             )
                         )
                         messageText = ""
-                        viewModel.simulateOtherUserMessage(receiver)
+                        viewModel.simulateOtherUserMessage(receiver!!)
                     }) {
                         Icon(
                             Icons.AutoMirrored.Filled.Send,
@@ -202,16 +237,20 @@ fun ChatScreen(sender: String, receiver: String, viewModel: ChatViewModel) {
                     previousMessage == null || (message.timestamp - previousMessage.timestamp) > 3600000L
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     if (showTimestamp) {
-                        Row {
+                        Row(modifier = Modifier.padding(vertical = 8.dp)) {
                             Text(
                                 text = formatTimestamp(message.timestamp).first,
-                                style = MaterialTheme.typography.titleSmall.copy(dateTextColor, fontWeight = FontWeight.Bold),
-                                modifier = Modifier.padding(vertical = 8.dp)
+                                style = MaterialTheme.typography.titleSmall.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = dateTextColor,
                             )
                             Text(
                                 text = formatTimestamp(message.timestamp).second,
-                                style = MaterialTheme.typography.titleSmall.copy(dateTextColor, fontWeight = FontWeight.Normal),
-                                modifier = Modifier.padding(vertical = 8.dp)
+                                style = MaterialTheme.typography.titleSmall.copy(
+                                    fontWeight = FontWeight.Normal
+                                ),
+                                color = dateTextColor,
                             )
                         }
                     }
@@ -219,7 +258,7 @@ fun ChatScreen(sender: String, receiver: String, viewModel: ChatViewModel) {
                     if (lessSpace) {
                         Spacer(modifier = Modifier.height(4.dp))
                     } else {
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
                     }
                 }
             }
