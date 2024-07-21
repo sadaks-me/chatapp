@@ -9,10 +9,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -23,18 +29,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.chatapp.data.models.Message
 import java.time.Instant
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatListScreen(viewModel: ChatViewModel) {
+fun ChatScreen(user: String, viewModel: ChatViewModel, navController: NavController) {
     val messageList by viewModel.allMessages.observeAsState(initial = emptyList())
     var messageText by remember { mutableStateOf("") }
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+        TopAppBar(navigationIcon = {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Localized description",
+                )
+            }
+        }, title = {
+            Text(
+                user,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+        })
+    }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(messageList) { message ->
-                    MessageItem(message)
+                    MessageItem(message, isFromSameUser = message.user == user)
                 }
             }
             Row {
@@ -46,7 +70,11 @@ fun ChatListScreen(viewModel: ChatViewModel) {
                 Button(onClick = {
                     if (messageText.isNotEmpty()) {
                         viewModel.insert(
-                            Message(content = messageText, timestamp = Instant.now().toEpochMilli(), isSent = true)
+                            Message(
+                                content = messageText,
+                                timestamp = Instant.now().toEpochMilli(),
+                                user = user
+                            )
                         )
                         messageText = ""
                     }
@@ -59,8 +87,8 @@ fun ChatListScreen(viewModel: ChatViewModel) {
 }
 
 @Composable
-fun MessageItem(message: Message) {
-    val alignment = if (message.isSent) Alignment.CenterEnd else Alignment.CenterStart
+fun MessageItem(message: Message, isFromSameUser: Boolean) {
+    val alignment = if (isFromSameUser) Alignment.CenterEnd else Alignment.CenterStart
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = alignment) {
         Text(
             text = message.content,
