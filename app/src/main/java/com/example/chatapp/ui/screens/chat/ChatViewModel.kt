@@ -31,7 +31,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun simulateOtherUserMessage() = viewModelScope.launch {
-        delay(3000)
+        delay(3500)
         val message = Message(
             content = SentenceGenerator.generate(),
             timestamp = Instant.now().toEpochMilli(),
