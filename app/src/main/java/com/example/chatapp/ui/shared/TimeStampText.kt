@@ -1,7 +1,9 @@
 package com.example.chatapp.ui.shared
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +24,7 @@ fun TimeStampText(timestamp: Long, showTimestamp: Boolean) {
                 ),
                 color = dateTextColor,
             )
+            Spacer(modifier = Modifier.width(2.dp))
             Text(
                 text = formatTimestamp(timestamp).second,
                 style = MaterialTheme.typography.titleSmall.copy(
