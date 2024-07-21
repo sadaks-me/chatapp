@@ -1,6 +1,8 @@
 
 # **ChatApp README**
 
+![Screenshot](https://github.com/user-attachments/assets/6617b87f-669b-4ac6-96d7-f966987e979f)
+
 ## **Overview**
 
 ChatApp is an Android application built using Kotlin, Jetpack Compose, and MVVM architecture. It features a simple chat interface with two pre-defined users, message sectioning based on timestamps. This README outlines the implementation details, assumptions made, app limitations, and potential improvements.
