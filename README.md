@@ -14,7 +14,7 @@ Architecture: MVVM (Model-View-ViewModel)
 UI Toolkit: Jetpack Compose
 Data Storage: Room Database
 Design Pattern: Repository Pattern
-Compose Libraries Used: Coroutines, LiveData, ViewModel, Material3
+Compose Libraries Used: Coroutines, LiveData, ViewModel, Material3.
 
 **UI Design**
 Compose: Used Scaffold, AppBar, BottomBar, TextField etc...
@@ -40,7 +40,7 @@ No user authentication or dynamic user management is implemented.
 **Message Storage:**
 
 Messages are stored locally using Room Database.
-No initial message history is provided, but sent messages are stored and simulated replies
+No initial message history is provided, but sent messages are stored and simulated replies.
 
 **Timestamp Sectioning:**
 
