@@ -51,7 +51,6 @@ fun ChatAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
         content = content
     )
 }
