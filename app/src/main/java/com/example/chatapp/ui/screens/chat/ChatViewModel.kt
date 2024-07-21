@@ -30,18 +30,20 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         repository.insert(message)
     }
 
-    fun simulateOtherUserMessage(user: String) = viewModelScope.launch {
-        delay(1000)
+    fun simulateOtherUserMessage() = viewModelScope.launch {
+        delay(3000)
         val message = Message(
             content = SentenceGenerator.generate(),
             timestamp = Instant.now().toEpochMilli(),
-            user = user,
+            user = receiver.value!!,
         )
         repository.insert(message)
     }
 
     fun switchUser() {
-        sender.postValue(if(sender.value == "Alice") "Sarah" else "Alice")
-        receiver.postValue(if(receiver.value == "Sarah") "Alice" else "Sarah")
+        val s = receiver.value
+        val r = sender.value
+        sender.postValue(s)
+        receiver.postValue(r)
     }
 }

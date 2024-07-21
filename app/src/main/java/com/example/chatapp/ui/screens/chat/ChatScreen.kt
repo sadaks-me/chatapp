@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -41,6 +42,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +59,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
@@ -73,11 +76,18 @@ import java.time.Instant
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(viewModel: ChatViewModel) {
+    val listState = rememberLazyListState()
     val messageList by viewModel.allMessages.observeAsState(initial = emptyList())
     val sender by viewModel.sender.observeAsState()
     val receiver by viewModel.receiver.observeAsState()
     var messageText by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(messageList.size) {
+        if (messageList.size > 1) {
+            listState.scrollToItem(messageList.size - 1)
+        }
+    }
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .navigationBarsPadding(), containerColor = Color.White, topBar = {
@@ -140,7 +150,14 @@ fun ChatScreen(viewModel: ChatViewModel) {
                         modifier = Modifier.size(48.dp)
                     )
                 }
-                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    offset = DpOffset(
+                        0.dp,
+                        (-10).dp
+                    )
+                ) {
                     DropdownMenuItem(
                         text = { Text("Switch User") },
                         onClick = {
@@ -150,7 +167,8 @@ fun ChatScreen(viewModel: ChatViewModel) {
                         leadingIcon = {
                             Icon(
                                 Icons.Outlined.Person,
-                                contentDescription = null
+                                contentDescription = null,
+                                tint = activeColor
                             )
                         },
                     )
@@ -211,7 +229,7 @@ fun ChatScreen(viewModel: ChatViewModel) {
                             )
                         )
                         messageText = ""
-                        viewModel.simulateOtherUserMessage(receiver!!)
+                        viewModel.simulateOtherUserMessage()
                     }) {
                         Icon(
                             Icons.AutoMirrored.Filled.Send,
@@ -225,6 +243,7 @@ fun ChatScreen(viewModel: ChatViewModel) {
     }) { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
+            state = listState,
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp)
         ) {
             itemsIndexed(messageList) { index, message ->
