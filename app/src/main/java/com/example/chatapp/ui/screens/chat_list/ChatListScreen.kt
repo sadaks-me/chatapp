@@ -16,8 +16,10 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -30,8 +32,8 @@ import com.example.chatapp.navigation.Screen
 fun ChatListScreen(navController: NavController) {
     val users = listOf(User("Sarah"), User("Alice"))
 
-    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-        TopAppBar(title = {
+    Scaffold(modifier = Modifier.fillMaxSize(), containerColor = Color.White, topBar = {
+        TopAppBar(colors = topAppBarColors(containerColor = Color.White), title = {
             Text(
                 LocalContext.current.getString(R.string.app_name),
                 modifier = Modifier

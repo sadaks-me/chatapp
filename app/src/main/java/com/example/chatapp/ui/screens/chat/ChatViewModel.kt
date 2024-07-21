@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatapp.data.local.database.MessageDatabase
 import com.example.chatapp.data.models.Message
 import com.example.chatapp.data.repositories.MessageRepository
+import com.example.chatapp.utils.SentenceGenerator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -29,7 +30,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     fun simulateOtherUserMessage(user: String) = viewModelScope.launch {
         delay(1000)
         val message = Message(
-            content = "Reply from $user",
+            content = SentenceGenerator.generate(),
             timestamp = Instant.now().toEpochMilli(),
             user = user,
         )
