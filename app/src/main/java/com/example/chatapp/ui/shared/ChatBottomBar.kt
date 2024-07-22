@@ -61,8 +61,7 @@ fun ChatBottomBar(user: String, viewModel: ChatViewModel) {
             ) {
                 Box(
                     Modifier
-                        .padding(end = 12.dp)
-                        .weight(0.87f)
+                        .weight(0.82f)
                         .defaultMinSize(minHeight = 48.dp)
                         .background(Color.Transparent, shape = RoundedCornerShape(32.dp))
                         .border(
@@ -77,7 +76,7 @@ fun ChatBottomBar(user: String, viewModel: ChatViewModel) {
                 ) {
                     innerTextField()
                 }
-                Box(Modifier.weight(0.13f), contentAlignment = Alignment.Center) {
+                Box(Modifier.weight(0.18f), contentAlignment = Alignment.CenterEnd) {
                     IconButton(modifier = Modifier
                         .size(48.dp)
                         .alpha(if (messageText.isNotEmpty()) 1f else 0.3f)
